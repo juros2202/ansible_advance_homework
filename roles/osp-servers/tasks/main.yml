@@ -1,13 +1,16 @@
 ---
-- name: "Create a server instance"
-  os_server: 
+# tasks file for osp.servers
+- name: Create new server instances and attaches them a network and passes metadata to the instance
+  os_server:
     cloud: ospcloud
-    flavor: m2.small
-    image: rhel-guest
-    key_name: ansible_ssh
-    meta: "group={{ group }},deployment_name={{ deployment }}"
     name: "{{ instance_name }}"
-    nics: 
+    image: "{{ image }}"
+    meta: "group={{ group }},deployment_name={{ deployment_name }}"
+    flavor: "{{ flavor  }}"
+    security_groups: "{{ security_group }}"
+    key_name: "{{ key_name }}"
+    wait: yes
+    nics:
     - net-name: int_network
     userdata: |
       #!/bin/bash
@@ -15,21 +18,20 @@
       cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
       curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
       cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
-      wait: true
   register: instanceip
-- name: "Add floating IP to \"{{ instance_name }}\""
-  os_floating_ip: 
+
+- name: Add floating IP to Servers
+  os_floating_ip:
     cloud: ospcloud
-    network: ext_network
-    reuse: true
+    state: "{{ state }}"
+    reuse: yes
     server: "{{ instance_name }}"
-    state: present
-    timeout: 180
+    network: ext_network
     wait: true
+    timeout: 180
   register: instancefloatingip
-- name: Show "{{ ipstanceip }}" public IP	 
-  debug: var=instancefloatingip.floating_ip.floating_ip_address
-- name: Wait for "{{ instance_name }}" to be available
+
+- name: Wait for server to be available
   wait_for:
     host: "{{ instancefloatingip.floating_ip.floating_ip_address }}"
     port: 22
