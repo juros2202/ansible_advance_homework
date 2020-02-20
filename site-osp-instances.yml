@@ -1,7 +1,5 @@
 - hosts: workstation
   become: yes
-  roles:
-    - osp-servers
 ##Create FrontEnd Instance
   - name: Create frontend instance
     include_role:
