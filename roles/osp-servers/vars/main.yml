@@ -1,4 +1,4 @@
---
+---
 # vars file for osp.servers
 osp_servers:
   frontend:
