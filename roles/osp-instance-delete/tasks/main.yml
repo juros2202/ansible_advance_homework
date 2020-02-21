@@ -3,7 +3,7 @@
    - name: Fetch Instance Info
      os_server_facts:
       cloud: ospcloud
-    register: instance
+     register: instance
 
   - name: Delete instances
     os_server:
