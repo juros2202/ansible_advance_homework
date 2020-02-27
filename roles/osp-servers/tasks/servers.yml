@@ -31,18 +31,9 @@
 
 - debug: var=floatingip.floating_ip.floating_ip_address
 
-- name: OpenStack servers
-  os_server_info:
-    cloud: ospcloud
-  register: result
-
-
-- name: Wait for server to be available
+- name: Wait for server to be available "{{ item.name }}"
   wait_for:
-    host: "{{ item.public_v4 }}"
-    port: 22
-    search_regex: OpenSSH
     timeout: 600
-  delegate_to: "{{ inventory_hostname }}"
-  with_items: 
-    - "{{ result.openstack_servers }}"
+    host: "{{ floatingip.floating_ip.floating_ip_address }}"
+    port: 22
+    state: present
