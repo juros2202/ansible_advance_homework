@@ -1,6 +1,1 @@
----
 # handlers file for lb-tier
-- name: restart haproxy
-  service:
-    name: haproxy
-    state: restarted
