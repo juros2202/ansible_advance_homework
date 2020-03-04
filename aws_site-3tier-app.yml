@@ -17,4 +17,4 @@
   - name: Configure AppDB Servers
     include_role:
       name: three_tier_appdb
-    when: "'appdbs' in group_names
+    when: "'appdbs' in group_names"
